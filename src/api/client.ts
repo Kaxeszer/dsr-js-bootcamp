@@ -1,6 +1,6 @@
 import type { Task, LoginResponse } from '../types'
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL
+const baseUrl = process.env.API_BASE_URL
 
 export async function login(nickname: string, password: string): Promise<LoginResponse> {
     const response = await fetch(`${baseUrl}/auth/login`, {

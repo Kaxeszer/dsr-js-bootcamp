@@ -6,7 +6,7 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-    const theme = (import.meta.env.VITE_THEME as Theme) || 'light'
+    const theme = (process.env.APP_THEME as Theme) || 'light'
 
     return (
         <ThemeContext.Provider value={{ theme }}>

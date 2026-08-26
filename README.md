@@ -2,13 +2,13 @@
 
 Personal project by **Luís Pereira (Kaxeszer)** for the DSR JavaScript Bootcamp (HTML, CSS, JavaScript, TypeScript, React).
 
-Built with Vite + React + TypeScript.
+Built with Webpack + React + TypeScript.
 
 ## Tech Stack
 
 - React
 - TypeScript
-- Vite
+- Webpack
 - ESLint
 - React Router DOM
 
@@ -21,7 +21,7 @@ This project connects to [task-board-api](https://github.com/koshkinoko-hana/tas
 ### Week 1
 
 **L1, React basics & TypeScript**
-- Initialized Vite + React + TypeScript project
+- Initialized Vite + React + TypeScript project (later migrated to Webpack)
 - Cleaned up boilerplate
 - Built SPA skeleton: Header, Login/Register/Tasks pages
 - Added routing with React Router DOM
@@ -50,13 +50,31 @@ This project connects to [task-board-api](https://github.com/koshkinoko-hana/tas
 
 **L4, Backend integration**
 - Deployed the task-board-api backend locally, following the provided setup instructions
-- Configured VITE_API_BASE_URL for development and production environments
+- Configured API_BASE_URL for development and production environments
 - Removed .env from version control, added .env.example as a template
 - Updated domain types (User, LoginResponse) to match the real API response shape (nickname, role)
 - Replaced the mocked API client with real fetch calls to /auth/login and /tasks
 - Replaced mock authentication in AuthContext with real backend authentication
 - Login form now uses nickname/password matching the backend contract, with error handling for invalid credentials
 - Real access token is stored in localStorage and used for authenticated requests; cleared on logout
+
+### Experiment: Webpack Playground
+
+**Branch:** `experiments/webpack-playground` (not merged into main)
+
+Rewrote the Vite build configuration to use Webpack instead, preserving all functionality from previous phases (authentication, theming, task management).
+
+- Replaced `vite.config.ts` with a custom `webpack.config.js` (ES Module syntax)
+- Configured Babel (`@babel/preset-env`, `@babel/preset-react`, `@babel/preset-typescript`) to transpile TypeScript/JSX, replacing Vite's built-in transform
+- Configured `html-webpack-plugin` to generate `index.html` with injected scripts
+- Configured `style-loader` and `css-loader` to handle CSS imports
+- Set up `webpack-dev-server` with `historyApiFallback` for React Router support
+- Replaced Vite's `import.meta.env` with `process.env`, using `dotenv` and Webpack's `DefinePlugin` to inject environment variables at build time
+- Renamed environment variables from `VITE_*` to plain names (`API_BASE_URL`, `APP_THEME`), since the `VITE_` prefix is Vite-specific and no longer relevant
+- Updated `tsconfig.app.json` to use Node types instead of `vite/client` types
+- Verified full functionality: authentication, theme switching, task CRUD operations and search all work identically to the Vite version
+
+Dev server runs on port 5174 (`npm run dev`), production build outputs to `dist-webpack` (`npm run build`).
 
 ---
 
