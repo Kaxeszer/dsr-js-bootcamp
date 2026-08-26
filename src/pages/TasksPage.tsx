@@ -1,14 +1,31 @@
 import { useState, useEffect, useMemo, useCallback, type SubmitEventHandler, type ChangeEvent } from 'react'
 import TaskCard from '../components/TaskCard'
 import type { Task } from '../types'
-import { generateMockTasks } from '../api/mockTasks'
 
 function TasksPage() {
     const [title, setTitle] = useState('')
     const [deadline, setDeadline] = useState('')
-    const [tasks, setTasks] = useState<Task[]>(() => generateMockTasks(100))
+    const [tasks, setTasks] = useState<Task[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState('')
     const [searchInput, setSearchInput] = useState('')
     const [debouncedSearch, setDebouncedSearch] = useState('')
+
+    useEffect(() => {
+        fetch('http://localhost:3001/tasks')
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch tasks')
+                return res.json()
+            })
+            .then((data: Task[]) => {
+                setTasks(data)
+                setIsLoading(false)
+            })
+            .catch(() => {
+                setError('Could not load tasks from the mock API')
+                setIsLoading(false)
+            })
+    }, [])
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -75,6 +92,9 @@ function TasksPage() {
                 onChange={handleSearchChange}
                 placeholder="Search tasks..."
             />
+
+            {isLoading && <p>Loading tasks...</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
 
             <h3>Tasks ({filteredTasks.length})</h3>
             <div>
