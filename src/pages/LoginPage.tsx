@@ -1,6 +1,7 @@
 import { useState, type SubmitEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { Container, Box, TextField, Button, Typography, Alert } from '@mui/material'
 
 function LoginPage() {
     const [nickname, setNickname] = useState('')
@@ -23,24 +24,32 @@ function LoginPage() {
     }
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="Nickname"
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                />
-                <button type="submit">Log in</button>
-            </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-        </div>
+        <Container maxWidth="xs">
+            <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Typography variant="h5" component="h2">
+                    Login
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <TextField
+                        label="Nickname"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        fullWidth
+                    />
+                    <Button type="submit" variant="contained" fullWidth>
+                        Log in
+                    </Button>
+                </Box>
+                {error && <Alert severity="error">{error}</Alert>}
+            </Box>
+        </Container>
     )
 }
 

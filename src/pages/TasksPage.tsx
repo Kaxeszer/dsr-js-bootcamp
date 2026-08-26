@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, type SubmitEventHandler, type ChangeEvent } from 'react'
 import TaskCard from '../components/TaskCard'
 import type { Task } from '../types'
+import { Container, Box, TextField, Button, Typography, Alert, CircularProgress, Stack } from '@mui/material'
 
 function TasksPage() {
     const [title, setTitle] = useState('')
@@ -70,39 +71,51 @@ function TasksPage() {
     }, [tasks, debouncedSearch])
 
     return (
-        <div>
-            <h2>Tasks</h2>
+        <Container maxWidth="sm">
+            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Typography variant="h5" component="h2">
+                    Tasks
+                </Typography>
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    value={title}
-                    onChange={handleTitleChange}
-                    placeholder="Task title"
+                <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    <TextField
+                        label="Task title"
+                        value={title}
+                        onChange={handleTitleChange}
+                        sx={{ flex: 1, minWidth: 150 }}
+                    />
+                    <TextField
+                        type="date"
+                        value={deadline}
+                        onChange={handleDeadlineChange}
+                        slotProps={{ inputLabel: { shrink: true } }}
+                    />
+                    <Button type="submit" variant="contained">
+                        Add task
+                    </Button>
+                </Box>
+
+                <TextField
+                    label="Search tasks..."
+                    value={searchInput}
+                    onChange={handleSearchChange}
+                    fullWidth
                 />
-                <input
-                    type="date"
-                    value={deadline}
-                    onChange={handleDeadlineChange}
-                />
-                <button type="submit">Add task</button>
-            </form>
 
-            <input
-                value={searchInput}
-                onChange={handleSearchChange}
-                placeholder="Search tasks..."
-            />
+                {isLoading && <CircularProgress size={24} />}
+                {error && <Alert severity="error">{error}</Alert>}
 
-            {isLoading && <p>Loading tasks...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+                <Typography variant="subtitle1">
+                    Tasks ({filteredTasks.length})
+                </Typography>
 
-            <h3>Tasks ({filteredTasks.length})</h3>
-            <div>
-                {filteredTasks.map((task) => (
-                    <TaskCard key={task.id} task={task} />
-                ))}
-            </div>
-        </div>
+                <Stack spacing={1}>
+                    {filteredTasks.map((task) => (
+                        <TaskCard key={task.id} task={task} />
+                    ))}
+                </Stack>
+            </Box>
+        </Container>
     )
 }
 

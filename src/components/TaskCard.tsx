@@ -1,4 +1,5 @@
 import type { Task } from '../types'
+import { Card, CardContent, Typography } from '@mui/material'
 
 interface TaskCardProps {
     task: Task
@@ -6,10 +7,16 @@ interface TaskCardProps {
 
 function TaskCard({ task }: TaskCardProps) {
     return (
-        <div>
-            <strong>{task.title}</strong>
-            <p>{task.deadline}</p>
-        </div>
+        <Card variant="outlined">
+            <CardContent>
+                <Typography variant="subtitle1" component="div">
+                    {task.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {task.deadline || 'No deadline'}
+                </Typography>
+            </CardContent>
+        </Card>
     )
 }
 

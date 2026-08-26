@@ -2,6 +2,19 @@ import { useState, type SubmitEventHandler } from 'react'
 import { useAuth } from '../context/useAuth'
 import { useLocalTasks } from '../hooks/useLocalTasks'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
+import {
+    Container,
+    Box,
+    TextField,
+    Button,
+    Typography,
+    Checkbox,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+} from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 function DashboardPage() {
     const { logout } = useAuth()
@@ -23,42 +36,65 @@ function DashboardPage() {
     )
 
     return (
-        <div>
-            <h2>Dashboard</h2>
-            <button onClick={logout}>Log out</button>
+        <Container maxWidth="sm">
+            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="h5" component="h2">
+                        Dashboard
+                    </Typography>
+                    <Button variant="outlined" onClick={logout}>
+                        Log out
+                    </Button>
+                </Box>
 
-            <form onSubmit={handleAddTask}>
-                <input
-                    value={newTaskTitle}
-                    onChange={(e) => setNewTaskTitle(e.target.value)}
-                    placeholder="New task"
+                <Box component="form" onSubmit={handleAddTask} sx={{ display: 'flex', gap: 2 }}>
+                    <TextField
+                        label="New task"
+                        value={newTaskTitle}
+                        onChange={(e) => setNewTaskTitle(e.target.value)}
+                        fullWidth
+                    />
+                    <Button type="submit" variant="contained">
+                        Add task
+                    </Button>
+                </Box>
+
+                <TextField
+                    label="Search tasks..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    fullWidth
                 />
-                <button type="submit">Add task</button>
-            </form>
 
-            <input
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search tasks..."
-            />
+                <Typography variant="subtitle1">
+                    Tasks ({filteredTasks.length})
+                </Typography>
 
-            <h3>Tasks ({filteredTasks.length})</h3>
-            <ul>
-                {filteredTasks.map((task) => (
-                    <li key={task.id}>
-                        <input
-                            type="checkbox"
-                            checked={task.completed}
-                            onChange={() => toggleTaskCompleted(task.id)}
-                        />
-                        <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
-              {task.title}
-            </span>
-                        <button onClick={() => deleteTask(task.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
-        </div>
+                <List>
+                    {filteredTasks.map((task) => (
+                        <ListItem
+                            key={task.id}
+                            secondaryAction={
+                                <IconButton edge="end" onClick={() => deleteTask(task.id)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            }
+                        >
+                            <Checkbox
+                                checked={task.completed}
+                                onChange={() => toggleTaskCompleted(task.id)}
+                            />
+                            <ListItemText
+                                primary={task.title}
+                                sx={{
+                                    textDecoration: task.completed ? 'line-through' : 'none',
+                                }}
+                            />
+                        </ListItem>
+                    ))}
+                </List>
+            </Box>
+        </Container>
     )
 }
 
