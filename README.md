@@ -32,6 +32,18 @@ Built with Vite + React + TypeScript.
 - Fixed anti-pattern: expensive filtering computation on every render, replaced with useMemo
 - Confirmed stable keys (task.id) instead of array index
 
+### Week 2
+
+**L3, Context: Authentication, Theming, Local Task Management**
+- Implemented AuthContext with login, logout and access token, plus a useAuth hook
+- Login form (username + password), token simulated and stored in localStorage
+- Conditional rendering of Login/Dashboard based on authentication state, using a protected route
+- Implemented ThemeContext with light/dark themes via CSS custom properties, selected at build time through .env
+- Added task management to the Dashboard: create, read, update (completed status) and delete
+- Persisted tasks in localStorage, synced with React state via useEffect
+- Created a reusable useLocalTasks hook encapsulating all task operations
+- Created a reusable useDebouncedValue hook, used for debounced task search (300ms, case-insensitive substring match)
+
 ---
 
 ## Getting Started
