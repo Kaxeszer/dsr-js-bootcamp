@@ -10,7 +10,6 @@ import DashboardPage from './pages/DashboardPage'
 
 function AppRoutes() {
     const { accessToken } = useAuth()
-
     return (
         <Routes>
             <Route path="/login" element={<LoginPage />} />
