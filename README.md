@@ -11,6 +11,8 @@ Built with Vite + React + TypeScript.
 - Vite
 - ESLint
 - React Router DOM
+- MUI (Material UI)
+- json-server (mock API)
 
 ## Backend
 
@@ -38,14 +40,13 @@ This project connects to [task-board-api](https://github.com/koshkinoko-hana/tas
 
 ### Week 2
 
-**L3, Context: Authentication, Theming, Local Task Management**
+**L3, Context: Authentication, Theming, Dashboard Task Management**
 - Implemented AuthContext with login, logout and access token, plus a useAuth hook
 - Login form (username + password), token simulated and stored in localStorage
 - Conditional rendering of Login/Dashboard based on authentication state, using a protected route
 - Implemented ThemeContext with light/dark themes via CSS custom properties, selected at build time through .env
-- Added task management to the Dashboard: create, read, update (completed status) and delete
-- Persisted tasks in localStorage, synced with React state via useEffect
-- Created a reusable useLocalTasks hook encapsulating all task operations
+- Dashboard shares the same task data (mock API) as the Tasks page: Tasks is the read/search view, Dashboard is the full CRUD management view (create, update completed status, delete)
+- Created a reusable useApiTasks hook encapsulating all task operations against the mock API
 - Created a reusable useDebouncedValue hook, used for debounced task search (300ms, case-insensitive substring match)
 
 **L4, Backend integration**
@@ -58,6 +59,16 @@ This project connects to [task-board-api](https://github.com/koshkinoko-hana/tas
 - Login form now uses nickname/password matching the backend contract, with error handling for invalid credentials
 - Real access token is stored in localStorage and used for authenticated requests; cleared on logout
 
+### Advisor Feedback
+
+Following review of L1/L2, the advisor suggested:
+- Adding navigation to the Header instead of typing URLs manually
+- Moving BrowserRouter to main.tsx for a cleaner architecture
+- Using a mock API tool (e.g. Mockoon) instead of hardcoded mock data
+- Optionally using a UI library (MUI, Ant Design or Bootstrap) to save time on CSS
+
+All four points were addressed and propagated across L1 → L2 → L3 → L4 → main.
+
 ---
 
 ## Getting Started
@@ -67,4 +78,4 @@ npm install
 npm run dev
 ```
 
-Requires the [task-board-api](https://github.com/koshkinoko-hana/task-board-api) backend running locally on port 3000.
+Requires the [task-board-api](https://github.com/koshkinoko-hana/task-board-api) backend running locally on port 3000, and the mock API running locally on port 3001 (`npm run mock-api`).

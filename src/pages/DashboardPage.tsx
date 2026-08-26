@@ -1,6 +1,6 @@
 import { useState, type SubmitEventHandler } from 'react'
 import { useAuth } from '../context/useAuth'
-import { useLocalTasks } from '../hooks/useLocalTasks'
+import { useApiTasks } from '../hooks/useApiTasks'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import {
     Container,
@@ -13,12 +13,14 @@ import {
     List,
     ListItem,
     ListItemText,
+    CircularProgress,
+    Alert,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 
 function DashboardPage() {
     const { logout } = useAuth()
-    const { tasks, addTask, deleteTask, toggleTaskCompleted } = useLocalTasks()
+    const { tasks, isLoading, error, addTask, deleteTask, toggleTaskCompleted } = useApiTasks()
 
     const [newTaskTitle, setNewTaskTitle] = useState('')
     const [searchInput, setSearchInput] = useState('')
@@ -27,7 +29,7 @@ function DashboardPage() {
     const handleAddTask: SubmitEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault()
         if (!newTaskTitle) return
-        addTask(newTaskTitle)
+        void addTask(newTaskTitle)
         setNewTaskTitle('')
     }
 
@@ -66,6 +68,9 @@ function DashboardPage() {
                     fullWidth
                 />
 
+                {isLoading && <CircularProgress size={24} />}
+                {error && <Alert severity="error">{error}</Alert>}
+
                 <Typography variant="subtitle1">
                     Tasks ({filteredTasks.length})
                 </Typography>
@@ -75,14 +80,14 @@ function DashboardPage() {
                         <ListItem
                             key={task.id}
                             secondaryAction={
-                                <IconButton edge="end" onClick={() => deleteTask(task.id)}>
+                                <IconButton edge="end" onClick={() => void deleteTask(task.id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             }
                         >
                             <Checkbox
                                 checked={task.completed}
-                                onChange={() => toggleTaskCompleted(task.id)}
+                                onChange={() => void toggleTaskCompleted(task.id, task.completed)}
                             />
                             <ListItemText
                                 primary={task.title}

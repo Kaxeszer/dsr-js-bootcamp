@@ -1,42 +1,6 @@
 {
   "tasks": [
     {
-      "id": "816c5ff8-4a57-476b-9b3f-a4f3c85c164e",
-      "title": "Buy groceries",
-      "deadline": "2026-09-02",
-      "completed": false
-    },
-    {
-      "id": "435ed9a4-7cae-4a7f-8b4e-f60aea9c9cf1",
-      "title": "Call groceries",
-      "deadline": "2026-08-20",
-      "completed": false
-    },
-    {
-      "id": "91c9ec8a-ec5e-4db0-802b-9184ed96a33b",
-      "title": "Finish groceries",
-      "deadline": "2026-08-25",
-      "completed": false
-    },
-    {
-      "id": "3ed9e352-daef-4978-9253-2d9588488654",
-      "title": "Clean groceries",
-      "deadline": "2026-09-14",
-      "completed": false
-    },
-    {
-      "id": "1990f371-5fd0-4a73-a151-6339fa85aea3",
-      "title": "Review groceries",
-      "deadline": "2026-09-15",
-      "completed": false
-    },
-    {
-      "id": "6372aa70-cd43-44df-8af5-9a981b05b4e4",
-      "title": "Prepare groceries",
-      "deadline": "2026-08-26",
-      "completed": false
-    },
-    {
       "id": "914e6c31-df4f-4a42-96f6-68597ff6dab0",
       "title": "Send groceries",
       "deadline": "2026-09-03",
@@ -599,6 +563,13 @@
       "title": "Schedule the proposal",
       "deadline": "2026-09-22",
       "completed": false
+    },
+    {
+      "title": "A",
+      "deadline": "",
+      "completed": false,
+      "id": "sb0zG8NQ2C8"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
