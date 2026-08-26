@@ -1,0 +1,33 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+:root {
+    --color-background: #ffffff;
+    --color-text: #1a1a1a;
+}
+
+[data-theme='dark'] {
+    --color-background: #1a1a1a;
+    --color-text: #f5f5f5;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+[data-theme] {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
