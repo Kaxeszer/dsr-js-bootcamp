@@ -10,6 +10,8 @@ function Header() {
                 <Link to="/register">Register</Link>
                 {' | '}
                 <Link to="/tasks">Tasks</Link>
+                {' | '}
+                <Link to="/dashboard">Dashboard</Link>
             </nav>
         </header>
     )
