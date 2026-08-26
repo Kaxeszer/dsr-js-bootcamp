@@ -12,6 +12,10 @@ Built with Vite + React + TypeScript.
 - ESLint
 - React Router DOM
 
+## Backend
+
+This project connects to [task-board-api](https://github.com/koshkinoko-hana/task-board-api) (NestJS + Prisma + SQLite), run locally for authentication.
+
 ## Progress Log
 
 ### Week 1
@@ -44,6 +48,16 @@ Built with Vite + React + TypeScript.
 - Created a reusable useLocalTasks hook encapsulating all task operations
 - Created a reusable useDebouncedValue hook, used for debounced task search (300ms, case-insensitive substring match)
 
+**L4, Backend integration**
+- Deployed the task-board-api backend locally, following the provided setup instructions
+- Configured VITE_API_BASE_URL for development and production environments
+- Removed .env from version control, added .env.example as a template
+- Updated domain types (User, LoginResponse) to match the real API response shape (nickname, role)
+- Replaced the mocked API client with real fetch calls to /auth/login and /tasks
+- Replaced mock authentication in AuthContext with real backend authentication
+- Login form now uses nickname/password matching the backend contract, with error handling for invalid credentials
+- Real access token is stored in localStorage and used for authenticated requests; cleared on logout
+
 ---
 
 ## Getting Started
@@ -52,3 +66,5 @@ Built with Vite + React + TypeScript.
 npm install
 npm run dev
 ```
+
+Requires the [task-board-api](https://github.com/koshkinoko-hana/task-board-api) backend running locally on port 3000.

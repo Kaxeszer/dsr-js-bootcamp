@@ -1,7 +1,8 @@
 export interface User {
     id: string;
-    name: string;
+    nickname: string;
     email: string;
+    role: 'USER' | 'ADMIN';
 }
 
 export interface Task {
@@ -13,5 +14,9 @@ export interface Task {
 
 export interface AuthTokens {
     accessToken: string;
-    refreshToken: string;
+}
+
+export interface LoginResponse {
+    accessToken: string;
+    user: User;
 }

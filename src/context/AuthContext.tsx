@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { AuthContext } from './AuthContextDefinition'
+import { login as loginRequest } from '../api/client'
 
 interface AuthProviderProps {
     children: ReactNode
@@ -10,10 +11,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return localStorage.getItem('accessToken')
     })
 
-    function login(username: string, _password: string) {
-        const mockToken = `mock-token-${username}-${Date.now()}`
-        localStorage.setItem('accessToken', mockToken)
-        setAccessToken(mockToken)
+    async function login(nickname: string, password: string) {
+        const { accessToken: token } = await loginRequest(nickname, password)
+        localStorage.setItem('accessToken', token)
+        setAccessToken(token)
     }
 
     function logout() {
