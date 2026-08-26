@@ -1,11 +1,11 @@
 import { useState, type SubmitEventHandler } from 'react'
 import { useAuth } from '../context/useAuth'
-import { useLocalTasks } from '../hooks/useLocalTasks'
+import { useApiTasks } from '../hooks/useApiTasks'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 
 function DashboardPage() {
     const { logout } = useAuth()
-    const { tasks, addTask, deleteTask, toggleTaskCompleted } = useLocalTasks()
+    const { tasks, isLoading, error, addTask, deleteTask, toggleTaskCompleted } = useApiTasks()
 
     const [newTaskTitle, setNewTaskTitle] = useState('')
     const [searchInput, setSearchInput] = useState('')
@@ -14,7 +14,7 @@ function DashboardPage() {
     const handleAddTask: SubmitEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault()
         if (!newTaskTitle) return
-        addTask(newTaskTitle)
+        void addTask(newTaskTitle)
         setNewTaskTitle('')
     }
 
@@ -42,6 +42,9 @@ function DashboardPage() {
                 placeholder="Search tasks..."
             />
 
+            {isLoading && <p>Loading tasks...</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <h3>Tasks ({filteredTasks.length})</h3>
             <ul>
                 {filteredTasks.map((task) => (
@@ -49,12 +52,12 @@ function DashboardPage() {
                         <input
                             type="checkbox"
                             checked={task.completed}
-                            onChange={() => toggleTaskCompleted(task.id)}
+                            onChange={() => void toggleTaskCompleted(task.id, task.completed)}
                         />
                         <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>
               {task.title}
             </span>
-                        <button onClick={() => deleteTask(task.id)}>Delete</button>
+                        <button onClick={() => void deleteTask(task.id)}>Delete</button>
                     </li>
                 ))}
             </ul>
