@@ -1,12 +1,6 @@
 {
   "tasks": [
     {
-      "id": "816c5ff8-4a57-476b-9b3f-a4f3c85c164e",
-      "title": "Buy groceries",
-      "deadline": "2026-09-02",
-      "completed": false
-    },
-    {
       "id": "435ed9a4-7cae-4a7f-8b4e-f60aea9c9cf1",
       "title": "Call groceries",
       "deadline": "2026-08-20",
@@ -599,6 +593,13 @@
       "title": "Schedule the proposal",
       "deadline": "2026-09-22",
       "completed": false
+    },
+    {
+      "title": "A",
+      "deadline": "",
+      "completed": false,
+      "id": "sb0zG8NQ2C8"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
