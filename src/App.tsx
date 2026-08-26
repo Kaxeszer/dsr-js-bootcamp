@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { useAuth } from './context/useAuth'
@@ -28,12 +28,10 @@ function App() {
     return (
         <ThemeProvider>
             <AuthProvider>
-                <BrowserRouter>
-                    <Header />
-                    <main>
-                        <AppRoutes />
-                    </main>
-                </BrowserRouter>
+                <Header />
+                <main>
+                    <AppRoutes />
+                </main>
             </AuthProvider>
         </ThemeProvider>
     )
