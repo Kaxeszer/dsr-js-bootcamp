@@ -1,6 +1,6 @@
 import { useState, type SubmitEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/useAuth'
+import { useAuth } from '../hooks/useAuth'
 import { Container, Box, TextField, Button, Typography, Alert } from '@mui/material'
 
 function LoginPage() {

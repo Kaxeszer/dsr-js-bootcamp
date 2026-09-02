@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { AuthContext } from './AuthContextDefinition'
-import { login as loginRequest } from '../api/client'
+import { login as loginRequest } from '../api/authService'
 
 interface AuthProviderProps {
     children: ReactNode

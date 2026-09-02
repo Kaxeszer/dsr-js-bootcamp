@@ -1,45 +1,35 @@
-import { useState, type SubmitEventHandler } from 'react'
-import { useAuth } from '../context/useAuth'
+import { useState } from 'react'
+import { useAuth } from '../hooks/useAuth'
 import { useApiTasks } from '../hooks/useApiTasks'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
+import TaskCard from '../components/TaskCard'
+import NewTaskForm from '../components/NewTaskForm'
+import type { TaskPriority } from '../types'
 import {
     Container,
     Box,
     TextField,
     Button,
     Typography,
-    Checkbox,
-    IconButton,
-    List,
-    ListItem,
-    ListItemText,
     CircularProgress,
     Alert,
+    Stack,
 } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/Delete'
 
 function DashboardPage() {
     const { logout } = useAuth()
-    const { tasks, isLoading, error, addTask, deleteTask, toggleTaskCompleted } = useApiTasks()
+    const { tasks, isLoading, error, addTask, deleteTask, updateTaskStatus } = useApiTasks()
 
-    const [newTaskTitle, setNewTaskTitle] = useState('')
     const [searchInput, setSearchInput] = useState('')
     const debouncedSearch = useDebouncedValue(searchInput, 300)
-
-    const handleAddTask: SubmitEventHandler<HTMLFormElement> = (e) => {
-        e.preventDefault()
-        if (!newTaskTitle) return
-        void addTask(newTaskTitle)
-        setNewTaskTitle('')
-    }
 
     const filteredTasks = tasks.filter((task) =>
         task.title.toLowerCase().includes(debouncedSearch.toLowerCase())
     )
 
     return (
-        <Container maxWidth="sm">
-            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Container maxWidth="lg">
+            <Box sx={{ mt: 4, mb: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h5" component="h2">
                         Dashboard
@@ -49,22 +39,15 @@ function DashboardPage() {
                     </Button>
                 </Box>
 
-                <Box component="form" onSubmit={handleAddTask} sx={{ display: 'flex', gap: 2 }}>
-                    <TextField
-                        label="New task"
-                        value={newTaskTitle}
-                        onChange={(e) => setNewTaskTitle(e.target.value)}
-                        fullWidth
-                    />
-                    <Button type="submit" variant="contained">
-                        Add task
-                    </Button>
-                </Box>
+                <NewTaskForm
+                    onSubmit={(title, priority: TaskPriority) => void addTask(title, priority)}
+                />
 
                 <TextField
                     label="Search tasks..."
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
+                    size="small"
                     fullWidth
                 />
 
@@ -75,29 +58,16 @@ function DashboardPage() {
                     Tasks ({filteredTasks.length})
                 </Typography>
 
-                <List>
+                <Stack spacing={2}>
                     {filteredTasks.map((task) => (
-                        <ListItem
+                        <TaskCard
                             key={task.id}
-                            secondaryAction={
-                                <IconButton edge="end" onClick={() => void deleteTask(task.id)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            }
-                        >
-                            <Checkbox
-                                checked={task.completed}
-                                onChange={() => void toggleTaskCompleted(task.id, task.completed)}
-                            />
-                            <ListItemText
-                                primary={task.title}
-                                sx={{
-                                    textDecoration: task.completed ? 'line-through' : 'none',
-                                }}
-                            />
-                        </ListItem>
+                            task={task}
+                            onStatusChange={(t, status) => void updateTaskStatus(t, status)}
+                            onDelete={(id) => void deleteTask(id)}
+                        />
                     ))}
-                </List>
+                </Stack>
             </Box>
         </Container>
     )

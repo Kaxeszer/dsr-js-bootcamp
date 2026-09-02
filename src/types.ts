@@ -5,15 +5,26 @@ export interface User {
     role: 'USER' | 'ADMIN';
 }
 
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type TaskVisibility = 'ONLY_ME' | 'LIST' | 'ANYONE';
+
 export interface Task {
     id: string;
     title: string;
-    deadline: string;
-    completed: boolean;
+    description: string;
+    status: TaskStatus;
+    priority: TaskPriority;
+    visibility: TaskVisibility;
+    viewerUserIds: string[];
+    createdAt: string;
 }
 
-export interface AuthTokens {
-    accessToken: string;
+export interface TaskListResponse {
+    items: Task[];
+    total: number;
+    page: number;
+    pageSize: number;
 }
 
 export interface LoginResponse {

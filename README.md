@@ -12,11 +12,10 @@ Built with Vite + React + TypeScript.
 - ESLint
 - React Router DOM
 - MUI (Material UI)
-- json-server (mock API)
 
 ## Backend
 
-This project connects to [task-board-api](https://github.com/koshkinoko-hana/task-board-api) (NestJS + Prisma + SQLite), run locally for authentication.
+This project connects to [task-board-api](https://github.com/koshkinoko-hana/task-board-api) (NestJS + Prisma + SQLite), run locally, for authentication and task management.
 
 ## Progress Log
 
@@ -59,7 +58,7 @@ This project connects to [task-board-api](https://github.com/koshkinoko-hana/tas
 - Login form now uses nickname/password matching the backend contract, with error handling for invalid credentials
 - Real access token is stored in localStorage and used for authenticated requests; cleared on logout
 
-### Advisor Feedback
+**Mentor feedback (L1/L2)**
 
 Following review of L1/L2, the advisor suggested:
 - Adding navigation to the Header instead of typing URLs manually
@@ -68,6 +67,20 @@ Following review of L1/L2, the advisor suggested:
 - Optionally using a UI library (MUI, Ant Design or Bootstrap) to save time on CSS
 
 All four points were addressed and propagated across L1 → L2 → L3 → L4 → main.
+
+### Week 3
+
+**Mentor feedback (L3/L4)**
+
+Following further review, the mentor requested:
+- Removing all remaining mock data and reading tasks from the real backend only
+- Applying SOLID principles across the codebase
+- Using async/await consistently instead of mixing in .then() chains
+- Reading the API base URL from environment variables instead of hardcoding it
+- Sending the Bearer access token on authenticated task requests
+- Moving useAuth from context/ to hooks/
+
+All six points were addressed and propagated across the project.
 
 ---
 
@@ -78,4 +91,4 @@ npm install
 npm run dev
 ```
 
-Requires the [task-board-api](https://github.com/koshkinoko-hana/task-board-api) backend running locally on port 3000, and the mock API running locally on port 3001 (`npm run mock-api`).
+Requires the [task-board-api](https://github.com/koshkinoko-hana/task-board-api) backend running locally on port 3000.

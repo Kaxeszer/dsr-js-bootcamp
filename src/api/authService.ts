@@ -1,4 +1,4 @@
-import type { Task, LoginResponse } from '../types'
+import type { LoginResponse } from '../types'
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -11,20 +11,6 @@ export async function login(nickname: string, password: string): Promise<LoginRe
 
     if (!response.ok) {
         throw new Error('Invalid credentials')
-    }
-
-    return response.json()
-}
-
-export async function getTasks(accessToken: string): Promise<Task[]> {
-    const response = await fetch(`${baseUrl}/tasks`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    })
-
-    if (!response.ok) {
-        throw new Error('Failed to fetch tasks')
     }
 
     return response.json()
