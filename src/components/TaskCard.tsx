@@ -31,45 +31,51 @@ function formatDate(isoDate: string): string {
 
 interface TaskCardProps {
     task: Task
+    onOpen: () => void
     onStatusChange: (task: Task, status: TaskStatus) => void
     onDelete: (id: string) => void
 }
 
-function TaskCard({ task, onStatusChange, onDelete }: TaskCardProps) {
+function TaskCard({ task, onOpen, onStatusChange, onDelete }: TaskCardProps) {
     return (
         <Card variant="outlined">
             <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box>
-                        <Typography variant="caption" color="text.secondary">
-                            Title
-                        </Typography>
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                textDecoration: task.status === 'DONE' ? 'line-through' : 'none',
-                            }}
-                        >
-                            {task.title}
-                        </Typography>
-                    </Box>
+                    <Box
+                        onClick={onOpen}
+                        sx={{ cursor: 'pointer', display: 'flex', gap: 6, flexGrow: 1 }}
+                    >
+                        <Box>
+                            <Typography variant="caption" color="text.secondary">
+                                Title
+                            </Typography>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    textDecoration: task.status === 'DONE' ? 'line-through' : 'none',
+                                }}
+                            >
+                                {task.title}
+                            </Typography>
+                        </Box>
 
-                    <Box>
-                        <Typography variant="caption" color="text.secondary">
-                            Priority
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            {PRIORITY_LABELS[task.priority]}
-                        </Typography>
-                    </Box>
+                        <Box>
+                            <Typography variant="caption" color="text.secondary">
+                                Priority
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                {PRIORITY_LABELS[task.priority]}
+                            </Typography>
+                        </Box>
 
-                    <Box>
-                        <Typography variant="caption" color="text.secondary">
-                            Created
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            {formatDate(task.createdAt)}
-                        </Typography>
+                        <Box>
+                            <Typography variant="caption" color="text.secondary">
+                                Created
+                            </Typography>
+                            <Typography variant="subtitle1">
+                                {formatDate(task.createdAt)}
+                            </Typography>
+                        </Box>
                     </Box>
 
                     <Box>
