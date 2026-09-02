@@ -2,6 +2,10 @@ import { create } from 'zustand'
 import type { Task, TaskStatus, TaskPriority } from '../types'
 import { fetchTasks, createTask, deleteTaskById, replaceTaskStatus } from '../api/taskService'
 
+function getErrorMessage(err: unknown, fallback: string): string {
+    return err instanceof Error ? err.message : fallback
+}
+
 interface TaskState {
     tasks: Task[]
     isLoading: boolean
@@ -22,8 +26,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         try {
             const data = await fetchTasks(accessToken)
             set({ tasks: data.items, isLoading: false })
-        } catch {
-            set({ error: 'Could not load tasks from the API', isLoading: false })
+        } catch (err) {
+            set({ error: getErrorMessage(err, 'Could not load tasks'), isLoading: false })
         }
     },
 
@@ -32,8 +36,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         try {
             const created = await createTask(accessToken, title, description, priority)
             set({ tasks: [created, ...get().tasks] })
-        } catch {
-            set({ error: 'Could not create task' })
+        } catch (err) {
+            set({ error: getErrorMessage(err, 'Could not create task') })
         }
     },
 
@@ -42,8 +46,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         try {
             await deleteTaskById(accessToken, id)
             set({ tasks: get().tasks.filter((task) => task.id !== id) })
-        } catch {
-            set({ error: 'Could not delete task' })
+        } catch (err) {
+            set({ error: getErrorMessage(err, 'Could not delete task') })
         }
     },
 
@@ -54,8 +58,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
             set({
                 tasks: get().tasks.map((t) => (t.id === task.id ? updated : t)),
             })
-        } catch {
-            set({ error: 'Could not update task' })
+        } catch (err) {
+            set({ error: getErrorMessage(err, 'Could not update task') })
         }
     },
 }))

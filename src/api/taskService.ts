@@ -1,4 +1,5 @@
 import type { Task, TaskListResponse, TaskStatus, TaskPriority } from '../types'
+import { extractErrorMessage } from './errorUtils'
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/tasks`
 
@@ -14,7 +15,8 @@ export async function fetchTasks(accessToken: string): Promise<TaskListResponse>
         headers: { Authorization: `Bearer ${accessToken}` },
     })
     if (!res.ok) {
-        throw new Error('Failed to fetch tasks')
+        const message = await extractErrorMessage(res, 'Failed to fetch tasks')
+        throw new Error(message)
     }
     return res.json()
 }
@@ -38,16 +40,25 @@ export async function createTask(
         }),
     })
     if (!res.ok) {
-        throw new Error('Failed to create task')
+        const message = await extractErrorMessage(res, 'Failed to create task')
+        throw new Error(message)
     }
     return res.json()
 }
 
 export async function deleteTaskById(accessToken: string, id: string): Promise<void> {
-    await fetch(`${API_URL}/${id}`, {
+    const res = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${accessToken}` },
     })
+    if (!res.ok) {
+        const message = await extractErrorMessage(
+            res,
+            'Failed to delete task',
+            'You do not have permission to delete this task'
+        )
+        throw new Error(message)
+    }
 }
 
 export async function replaceTaskStatus(
@@ -68,7 +79,12 @@ export async function replaceTaskStatus(
         }),
     })
     if (!res.ok) {
-        throw new Error('Failed to update task')
+        const message = await extractErrorMessage(
+            res,
+            'Failed to update task',
+            'You do not have permission to update this task'
+        )
+        throw new Error(message)
     }
     return res.json()
 }

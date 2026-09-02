@@ -38,47 +38,51 @@ interface TaskCardProps {
 
 function TaskCard({ task, onOpen, onStatusChange, onDelete }: TaskCardProps) {
     return (
-        <Card variant="outlined">
+        <Card variant="outlined" sx={{ position: 'relative' }}>
+            <Box
+                onClick={onOpen}
+                sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    cursor: 'pointer',
+                    zIndex: 1,
+                }}
+            />
             <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box
-                        onClick={onOpen}
-                        sx={{ cursor: 'pointer', display: 'flex', gap: 6, flexGrow: 1 }}
-                    >
-                        <Box>
-                            <Typography variant="caption" color="text.secondary">
-                                Title
-                            </Typography>
-                            <Typography
-                                variant="subtitle1"
-                                sx={{
-                                    textDecoration: task.status === 'DONE' ? 'line-through' : 'none',
-                                }}
-                            >
-                                {task.title}
-                            </Typography>
-                        </Box>
-
-                        <Box>
-                            <Typography variant="caption" color="text.secondary">
-                                Priority
-                            </Typography>
-                            <Typography variant="subtitle1">
-                                {PRIORITY_LABELS[task.priority]}
-                            </Typography>
-                        </Box>
-
-                        <Box>
-                            <Typography variant="caption" color="text.secondary">
-                                Created
-                            </Typography>
-                            <Typography variant="subtitle1">
-                                {formatDate(task.createdAt)}
-                            </Typography>
-                        </Box>
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Title
+                        </Typography>
+                        <Typography
+                            variant="subtitle1"
+                            sx={{
+                                textDecoration: task.status === 'DONE' ? 'line-through' : 'none',
+                            }}
+                        >
+                            {task.title}
+                        </Typography>
                     </Box>
 
                     <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Priority
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            {PRIORITY_LABELS[task.priority]}
+                        </Typography>
+                    </Box>
+
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Created
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            {formatDate(task.createdAt)}
+                        </Typography>
+                    </Box>
+
+                    <Box sx={{ position: 'relative', zIndex: 2 }}>
                         <Typography variant="caption" color="text.secondary">
                             Status
                         </Typography>
@@ -105,7 +109,7 @@ function TaskCard({ task, onOpen, onStatusChange, onDelete }: TaskCardProps) {
                         </Select>
                     </Box>
 
-                    <Box>
+                    <Box sx={{ position: 'relative', zIndex: 2 }}>
                         <Typography variant="caption" color="text.secondary">
                             Delete
                         </Typography>

@@ -13,6 +13,8 @@ Built with Vite + React + TypeScript.
 - React Router DOM
 - MUI (Material UI)
 - Zustand
+- React Hook Form
+- Zod
 
 ## Backend
 
@@ -34,8 +36,8 @@ This project connects to [task-board-api](https://github.com/koshkinoko-hana/tas
 **L2, Virtual DOM, Fiber**
 - Replaced mock list with a generated list of 100 tasks
 - Added client-side search/filter by title, with debounce (300ms)
-- Fixed anti-pattern: callbacks recreated on every render, replaced with useCallback
-- Fixed anti-pattern: expensive filtering computation on every render, replaced with useMemo
+- Fixed antipattern: callbacks recreated on every render, replaced with useCallback
+- Fixed antipattern: expensive filtering computation on every render, replaced with useMemo
 - Confirmed stable keys (task.id) instead of array index
 
 ### Week 2
@@ -93,6 +95,15 @@ All six points were addressed and propagated across the project.
 - Split API logic into service modules (authService.ts, taskService.ts); stores depend on these services rather than calling fetch directly
 - Surfaced backend validation error messages (nickname, password, email) directly in the UI, one per line
 - Cleared stale errors when navigating between Login and Register
+
+**L6, Product-like routes & form validation**
+- Renamed the Dashboard page and route to Tasks (/tasks), matching the final project structure
+- Created a ProtectedRoute component that redirects to /login when there is no access token, replacing inline route guards
+- Added react-hook-form and zod for form validation on Login, Register and the task creation form
+- Validation rules match the backend contract: nickname (3–24 chars, lowercase/digits/underscore), password (min 8 chars), email (valid format), task title (required) and description (max length)
+- Field-level error messages now appear directly under each input as the user types
+- Extracted a shared errorUtils module to parse backend error messages consistently across authService and taskService
+- Added a specific, human-readable message for 403 (permission) errors when updating or deleting another user's task
 
 ---
 

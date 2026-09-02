@@ -1,25 +1,31 @@
-import { useState, useEffect, type SubmitEventHandler } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuthStore } from '../store/authStore'
+import { loginSchema, type LoginFormValues } from '../schemas/authSchemas'
 import { Container, Box, TextField, Button, Typography, Alert } from '@mui/material'
 
 function LoginPage() {
-    const [nickname, setNickname] = useState('')
-    const [password, setPassword] = useState('')
     const { login, isLoading, error, clearError } = useAuthStore()
     const navigate = useNavigate()
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormValues>({
+        resolver: zodResolver(loginSchema),
+    })
 
     useEffect(() => {
         clearError()
     }, [clearError])
 
-    const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
-        e.preventDefault()
-        if (!nickname || !password) return
-
-        const success = await login(nickname, password)
+    const onSubmit = async (data: LoginFormValues) => {
+        const success = await login(data.nickname, data.password)
         if (success) {
-            navigate('/dashboard')
+            navigate('/tasks')
         }
     }
 
@@ -29,19 +35,25 @@ function LoginPage() {
                 <Typography variant="h5" component="h2">
                     Login
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit(onSubmit)}
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                >
                     <TextField
                         label="Nickname"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
                         fullWidth
+                        {...register('nickname')}
+                        error={!!errors.nickname}
+                        helperText={errors.nickname?.message}
                     />
                     <TextField
                         label="Password"
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
                         fullWidth
+                        {...register('password')}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
                     />
                     <Button type="submit" variant="contained" fullWidth disabled={isLoading}>
                         {isLoading ? 'Logging in...' : 'Log in'}
