@@ -17,7 +17,7 @@ import {
     Stack,
 } from '@mui/material'
 
-function DashboardPage() {
+function TasksPage() {
     const { accessToken, logout } = useAuthStore()
     const { tasks, isLoading, error, loadTasks, addTask, removeTask, changeTaskStatus } = useTaskStore()
     const navigate = useNavigate()
@@ -40,7 +40,7 @@ function DashboardPage() {
             <Box sx={{ mt: 4, mb: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h5" component="h2">
-                        Dashboard
+                        Tasks
                     </Typography>
                     <Button variant="outlined" onClick={logout}>
                         Log out
@@ -87,4 +87,4 @@ function DashboardPage() {
     )
 }
 
-export default DashboardPage
+export default TasksPage

@@ -1,26 +1,31 @@
-import { useState, useEffect, type SubmitEventHandler } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuthStore } from '../store/authStore'
+import { registerSchema, type RegisterFormValues } from '../schemas/authSchemas'
 import { Container, Box, TextField, Button, Typography, Alert } from '@mui/material'
 
 function RegisterPage() {
-    const [nickname, setNickname] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const { register, isLoading, error, clearError } = useAuthStore()
+    const { register: registerUser, isLoading, error, clearError } = useAuthStore()
     const navigate = useNavigate()
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterFormValues>({
+        resolver: zodResolver(registerSchema),
+    })
 
     useEffect(() => {
         clearError()
     }, [clearError])
 
-    const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
-        e.preventDefault()
-        if (!nickname || !password) return
-
-        const success = await register(nickname, password, email || undefined)
+    const onSubmit = async (data: RegisterFormValues) => {
+        const success = await registerUser(data.nickname, data.password, data.email || undefined)
         if (success) {
-            navigate('/dashboard')
+            navigate('/tasks')
         }
     }
 
@@ -30,25 +35,32 @@ function RegisterPage() {
                 <Typography variant="h5" component="h2">
                     Register
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit(onSubmit)}
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                >
                     <TextField
                         label="Nickname"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
                         fullWidth
+                        {...register('nickname')}
+                        error={!!errors.nickname}
+                        helperText={errors.nickname?.message}
                     />
                     <TextField
                         label="Email (optional)"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
                         fullWidth
+                        {...register('email')}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
                     />
                     <TextField
                         label="Password"
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
                         fullWidth
+                        {...register('password')}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
                     />
                     <Button type="submit" variant="contained" fullWidth disabled={isLoading}>
                         {isLoading ? 'Registering...' : 'Register'}

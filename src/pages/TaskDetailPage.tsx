@@ -66,8 +66,8 @@ function TaskDetailPage() {
             <Container maxWidth="sm">
                 <Box sx={{ mt: 4 }}>
                     <Alert severity="warning">Task not found.</Alert>
-                    <Button sx={{ mt: 2 }} onClick={() => navigate('/dashboard')}>
-                        Back to Dashboard
+                    <Button sx={{ mt: 2 }} onClick={() => navigate('/tasks')}>
+                        Back to Tasks
                     </Button>
                 </Box>
             </Container>
@@ -77,8 +77,8 @@ function TaskDetailPage() {
     return (
         <Container maxWidth="sm">
             <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Button onClick={() => navigate('/dashboard')} sx={{ alignSelf: 'flex-start' }}>
-                    ← Back to Dashboard
+                <Button onClick={() => navigate('/tasks')} sx={{ alignSelf: 'flex-start' }}>
+                    ← Back to Tasks
                 </Button>
 
                 <Typography variant="h5">{task.title}</Typography>
