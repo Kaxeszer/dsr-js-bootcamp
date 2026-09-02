@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { useAuth } from '../hooks/useAuth'
-import { useApiTasks } from '../hooks/useApiTasks'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '../store/authStore'
+import { useTaskStore } from '../store/taskStore'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import TaskCard from '../components/TaskCard'
 import NewTaskForm from '../components/NewTaskForm'
@@ -17,11 +18,18 @@ import {
 } from '@mui/material'
 
 function DashboardPage() {
-    const { logout } = useAuth()
-    const { tasks, isLoading, error, addTask, deleteTask, updateTaskStatus } = useApiTasks()
+    const { accessToken, logout } = useAuthStore()
+    const { tasks, isLoading, error, loadTasks, addTask, removeTask, changeTaskStatus } = useTaskStore()
+    const navigate = useNavigate()
 
     const [searchInput, setSearchInput] = useState('')
     const debouncedSearch = useDebouncedValue(searchInput, 300)
+
+    useEffect(() => {
+        if (accessToken) {
+            void loadTasks(accessToken)
+        }
+    }, [accessToken, loadTasks])
 
     const filteredTasks = tasks.filter((task) =>
         task.title.toLowerCase().includes(debouncedSearch.toLowerCase())
@@ -40,7 +48,9 @@ function DashboardPage() {
                 </Box>
 
                 <NewTaskForm
-                    onSubmit={(title, priority: TaskPriority) => void addTask(title, priority)}
+                    onSubmit={(title, description, priority: TaskPriority) =>
+                        accessToken && void addTask(accessToken, title, description, priority)
+                    }
                 />
 
                 <TextField
@@ -49,6 +59,7 @@ function DashboardPage() {
                     onChange={(e) => setSearchInput(e.target.value)}
                     size="small"
                     fullWidth
+                    slotProps={{ inputLabel: { shrink: true } }}
                 />
 
                 {isLoading && <CircularProgress size={24} />}
@@ -63,8 +74,11 @@ function DashboardPage() {
                         <TaskCard
                             key={task.id}
                             task={task}
-                            onStatusChange={(t, status) => void updateTaskStatus(t, status)}
-                            onDelete={(id) => void deleteTask(id)}
+                            onOpen={() => navigate(`/tasks/${task.id}`)}
+                            onStatusChange={(t, status) =>
+                                accessToken && void changeTaskStatus(accessToken, t, status)
+                            }
+                            onDelete={(id) => accessToken && void removeTask(accessToken, id)}
                         />
                     ))}
                 </Stack>

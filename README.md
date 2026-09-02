@@ -12,6 +12,7 @@ Built with Vite + React + TypeScript.
 - ESLint
 - React Router DOM
 - MUI (Material UI)
+- Zustand
 
 ## Backend
 
@@ -81,6 +82,17 @@ Following further review, the mentor requested:
 - Moving useAuth from context/ to hooks/
 
 All six points were addressed and propagated across the project.
+
+**L5, State management & async**
+- Added Zustand for global state management
+- Created an authStore (login, register, logout, access token, user, loading/error state) and a taskStore (list, create, update status, delete, loading/error state)
+- Removed AuthContext and the old useAuth/useApiTasks hooks, fully replaced by Zustand stores
+- Implemented functional registration, connected to POST /auth/register on the real backend
+- Added a task detail page (/tasks/:id), opened by clicking a task in the Dashboard
+- Extended tasks with a description field, editable when creating a task
+- Split API logic into service modules (authService.ts, taskService.ts); stores depend on these services rather than calling fetch directly
+- Surfaced backend validation error messages (nickname, password, email) directly in the UI, one per line
+- Cleared stale errors when navigating between Login and Register
 
 ---
 

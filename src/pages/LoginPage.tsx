@@ -1,30 +1,30 @@
-import { useState, type SubmitEventHandler } from 'react'
+import { useState, useEffect, type SubmitEventHandler } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import { useAuthStore } from '../store/authStore'
 import { Container, Box, TextField, Button, Typography, Alert } from '@mui/material'
 
 function LoginPage() {
     const [nickname, setNickname] = useState('')
     const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const { login } = useAuth()
+    const { login, isLoading, error, clearError } = useAuthStore()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        clearError()
+    }, [clearError])
 
     const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault()
-        setError('')
         if (!nickname || !password) return
 
-        try {
-            await login(nickname, password)
+        const success = await login(nickname, password)
+        if (success) {
             navigate('/dashboard')
-        } catch {
-            setError('Invalid nickname or password')
         }
     }
 
     return (
-        <Container maxWidth="xs">
+        <Container maxWidth="sm">
             <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Typography variant="h5" component="h2">
                     Login
@@ -43,11 +43,15 @@ function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         fullWidth
                     />
-                    <Button type="submit" variant="contained" fullWidth>
-                        Log in
+                    <Button type="submit" variant="contained" fullWidth disabled={isLoading}>
+                        {isLoading ? 'Logging in...' : 'Log in'}
                     </Button>
                 </Box>
-                {error && <Alert severity="error">{error}</Alert>}
+                {error && (
+                    <Alert severity="error" sx={{ whiteSpace: 'pre-line' }}>
+                        {error}
+                    </Alert>
+                )}
             </Box>
         </Container>
     )

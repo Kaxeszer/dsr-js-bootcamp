@@ -1,14 +1,14 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
-import { useAuth } from './hooks/useAuth'
+import { useAuthStore } from './store/authStore'
 import Header from './components/Header'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import TaskDetailPage from './pages/TaskDetailPage'
 
 function AppRoutes() {
-    const { accessToken } = useAuth()
+    const { accessToken } = useAuthStore()
     return (
         <Routes>
             <Route path="/login" element={<LoginPage />} />
@@ -17,6 +17,10 @@ function AppRoutes() {
                 path="/dashboard"
                 element={accessToken ? <DashboardPage /> : <Navigate to="/login" />}
             />
+            <Route
+                path="/tasks/:id"
+                element={accessToken ? <TaskDetailPage /> : <Navigate to="/login" />}
+            />
         </Routes>
     )
 }
@@ -24,12 +28,10 @@ function AppRoutes() {
 function App() {
     return (
         <ThemeProvider>
-            <AuthProvider>
-                <Header />
-                <main style={{ display: 'flex', justifyContent: 'center' }}>
-                    <AppRoutes />
-                </main>
-            </AuthProvider>
+            <Header />
+            <main style={{ display: 'flex', justifyContent: 'center' }}>
+                <AppRoutes />
+            </main>
         </ThemeProvider>
     )
 }

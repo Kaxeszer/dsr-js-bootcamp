@@ -22,6 +22,7 @@ export async function fetchTasks(accessToken: string): Promise<TaskListResponse>
 export async function createTask(
     accessToken: string,
     title: string,
+    description: string,
     priority: TaskPriority
 ): Promise<Task> {
     const res = await fetch(API_URL, {
@@ -29,7 +30,7 @@ export async function createTask(
         headers: authHeaders(accessToken),
         body: JSON.stringify({
             title,
-            description: '',
+            description,
             status: 'TODO',
             priority,
             visibility: 'ANYONE',
