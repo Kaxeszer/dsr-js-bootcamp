@@ -105,6 +105,17 @@ All six points were addressed and propagated across the project.
 - Extracted a shared errorUtils module to parse backend error messages consistently across authService and taskService
 - Added a specific, human-readable message for 403 (permission) errors when updating or deleting another user's task
 
+### Week 4
+
+**L7, Web Worker, animations & Service Worker**
+- Added a Web Worker (taskSort.worker.ts) that filters and sorts tasks off the main thread, with sortable fields (title, priority, created date) and direction (ascending/descending), each with an alphabetical tie-breaker
+- Added sort controls to the Tasks page, wired to the worker through a useTaskWorker hook
+- Added task deletion and creation animations using MUI's Grow component inside TransitionGroup
+- Turned the task detail view into a routed dialog: /tasks/:id is now a nested route rendered inside the Tasks page, so the task list stays visible behind the dialog, with MUI's built-in Grow transition on open/close
+- Built a custom animated login mascot (a small robot) as the third, custom animation: its eyes track the nickname as it's typed, close together when the password field is focused, and one eye peeks and tracks the password text when visibility is toggled on
+- Kept the mascot's interactive state (focus, lengths, visibility) in a dedicated useLoginMascotState hook, following Single Responsibility: LoginPage stays focused on the form itself
+- Added a Service Worker (vite-plugin-pwa) with NetworkFirst caching for API GET requests, so the app can still show previously loaded tasks if the backend is unreachable
+
 ---
 
 ## Getting Started

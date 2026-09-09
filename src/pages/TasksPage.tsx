@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Routes, Route } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { useTaskStore } from '../store/taskStore'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
+import { useTaskWorker } from '../hooks/useTaskWorker'
+import type { SortField, SortDirection } from '../workers/taskSort.worker'
 import TaskCard from '../components/TaskCard'
 import NewTaskForm from '../components/NewTaskForm'
+import TaskDetailPage from './TaskDetailPage'
 import type { TaskPriority } from '../types'
 import {
     Container,
@@ -14,8 +17,23 @@ import {
     Typography,
     CircularProgress,
     Alert,
-    Stack,
+    Select,
+    MenuItem,
+    Grow,
+    type SelectChangeEvent,
 } from '@mui/material'
+import { TransitionGroup } from 'react-transition-group'
+
+const SORT_FIELD_LABELS: Record<SortField, string> = {
+    title: 'Title',
+    priority: 'Priority',
+    createdAt: 'Created',
+}
+
+const SORT_DIRECTION_LABELS: Record<SortDirection, string> = {
+    asc: 'Ascending',
+    desc: 'Descending',
+}
 
 function TasksPage() {
     const { accessToken, logout } = useAuthStore()
@@ -24,6 +42,8 @@ function TasksPage() {
 
     const [searchInput, setSearchInput] = useState('')
     const debouncedSearch = useDebouncedValue(searchInput, 300)
+    const [sortField, setSortField] = useState<SortField>('createdAt')
+    const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
     useEffect(() => {
         if (accessToken) {
@@ -31,9 +51,7 @@ function TasksPage() {
         }
     }, [accessToken, loadTasks])
 
-    const filteredTasks = tasks.filter((task) =>
-        task.title.toLowerCase().includes(debouncedSearch.toLowerCase())
-    )
+    const filteredTasks = useTaskWorker(tasks, debouncedSearch, sortField, sortDirection)
 
     return (
         <Container maxWidth="lg">
@@ -53,14 +71,38 @@ function TasksPage() {
                     }
                 />
 
-                <TextField
-                    label="Search tasks..."
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    size="small"
-                    fullWidth
-                    slotProps={{ inputLabel: { shrink: true } }}
-                />
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                    <TextField
+                        label="Search tasks..."
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        size="small"
+                        fullWidth
+                        slotProps={{ inputLabel: { shrink: true } }}
+                    />
+                    <Select
+                        value={sortField}
+                        onChange={(e: SelectChangeEvent) => setSortField(e.target.value as SortField)}
+                        size="small"
+                    >
+                        {(Object.keys(SORT_FIELD_LABELS) as SortField[]).map((field) => (
+                            <MenuItem key={field} value={field}>
+                                Sort by {SORT_FIELD_LABELS[field]}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    <Select
+                        value={sortDirection}
+                        onChange={(e: SelectChangeEvent) => setSortDirection(e.target.value as SortDirection)}
+                        size="small"
+                    >
+                        {(Object.keys(SORT_DIRECTION_LABELS) as SortDirection[]).map((direction) => (
+                            <MenuItem key={direction} value={direction}>
+                                {SORT_DIRECTION_LABELS[direction]}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </Box>
 
                 {isLoading && <CircularProgress size={24} />}
                 {error && <Alert severity="error">{error}</Alert>}
@@ -69,20 +111,27 @@ function TasksPage() {
                     Tasks ({filteredTasks.length})
                 </Typography>
 
-                <Stack spacing={2}>
+                <TransitionGroup component={Box} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {filteredTasks.map((task) => (
-                        <TaskCard
-                            key={task.id}
-                            task={task}
-                            onOpen={() => navigate(`/tasks/${task.id}`)}
-                            onStatusChange={(t, status) =>
-                                accessToken && void changeTaskStatus(accessToken, t, status)
-                            }
-                            onDelete={(id) => accessToken && void removeTask(accessToken, id)}
-                        />
+                        <Grow key={task.id} timeout={{ enter: 800, exit: 600 }}>
+                            <div>
+                                <TaskCard
+                                    task={task}
+                                    onOpen={() => navigate(`/tasks/${task.id}`)}
+                                    onStatusChange={(t, status) =>
+                                        accessToken && void changeTaskStatus(accessToken, t, status)
+                                    }
+                                    onDelete={(id) => accessToken && void removeTask(accessToken, id)}
+                                />
+                            </div>
+                        </Grow>
                     ))}
-                </Stack>
+                </TransitionGroup>
             </Box>
+
+            <Routes>
+                <Route path=":id" element={<TaskDetailPage />} />
+            </Routes>
         </Container>
     )
 }
