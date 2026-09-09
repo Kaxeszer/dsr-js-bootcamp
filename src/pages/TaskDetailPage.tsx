@@ -3,13 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { useTaskStore } from '../store/taskStore'
 import {
-    Container,
     Box,
     Typography,
     Button,
     CircularProgress,
     Alert,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    IconButton,
 } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 
 const PRIORITY_LABELS: Record<string, string> = {
     LOW: 'Low',
@@ -41,79 +46,83 @@ function TaskDetailPage() {
 
     const task = tasks.find((t) => t.id === id)
 
+    const handleClose = () => navigate('/tasks')
+
     if (isLoading) {
         return (
-            <Container maxWidth="sm">
-                <Box sx={{ mt: 4 }}>
+            <Dialog open onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogContent>
                     <CircularProgress size={24} />
-                </Box>
-            </Container>
+                </DialogContent>
+            </Dialog>
         )
     }
 
     if (error) {
         return (
-            <Container maxWidth="sm">
-                <Box sx={{ mt: 4 }}>
+            <Dialog open onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogContent>
                     <Alert severity="error">{error}</Alert>
-                </Box>
-            </Container>
+                </DialogContent>
+            </Dialog>
         )
     }
 
     if (!task) {
         return (
-            <Container maxWidth="sm">
-                <Box sx={{ mt: 4 }}>
+            <Dialog open onClose={handleClose} maxWidth="sm" fullWidth>
+                <DialogContent>
                     <Alert severity="warning">Task not found.</Alert>
-                    <Button sx={{ mt: 2 }} onClick={() => navigate('/tasks')}>
-                        Back to Tasks
-                    </Button>
-                </Box>
-            </Container>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Back to Tasks</Button>
+                </DialogActions>
+            </Dialog>
         )
     }
 
     return (
-        <Container maxWidth="sm">
-            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Button onClick={() => navigate('/tasks')} sx={{ alignSelf: 'flex-start' }}>
-                    ← Back to Tasks
-                </Button>
+        <Dialog open onClose={handleClose} maxWidth="sm" fullWidth>
+            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {task.title}
+                <IconButton onClick={handleClose} size="small">
+                    <CloseIcon fontSize="small" />
+                </IconButton>
+            </DialogTitle>
+            <DialogContent>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Description
+                        </Typography>
+                        <Typography variant="body1">
+                            {task.description || 'No description'}
+                        </Typography>
+                    </Box>
 
-                <Typography variant="h5">{task.title}</Typography>
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Status
+                        </Typography>
+                        <Typography variant="body1">{STATUS_LABELS[task.status]}</Typography>
+                    </Box>
 
-                <Box>
-                    <Typography variant="caption" color="text.secondary">
-                        Description
-                    </Typography>
-                    <Typography variant="body1">
-                        {task.description || 'No description'}
-                    </Typography>
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Priority
+                        </Typography>
+                        <Typography variant="body1">{PRIORITY_LABELS[task.priority]}</Typography>
+                    </Box>
+
+                    <Box>
+                        <Typography variant="caption" color="text.secondary">
+                            Created
+                        </Typography>
+                        <Typography variant="body1">{formatDate(task.createdAt)}</Typography>
+                    </Box>
                 </Box>
-
-                <Box>
-                    <Typography variant="caption" color="text.secondary">
-                        Status
-                    </Typography>
-                    <Typography variant="body1">{STATUS_LABELS[task.status]}</Typography>
-                </Box>
-
-                <Box>
-                    <Typography variant="caption" color="text.secondary">
-                        Priority
-                    </Typography>
-                    <Typography variant="body1">{PRIORITY_LABELS[task.priority]}</Typography>
-                </Box>
-
-                <Box>
-                    <Typography variant="caption" color="text.secondary">
-                        Created
-                    </Typography>
-                    <Typography variant="body1">{formatDate(task.createdAt)}</Typography>
-                </Box>
-            </Box>
-        </Container>
+            </DialogContent>
+        </Dialog>
     )
 }
 

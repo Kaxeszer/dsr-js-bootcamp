@@ -5,7 +5,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import TasksPage from './pages/TasksPage'
-import TaskDetailPage from './pages/TaskDetailPage'
 
 function AppRoutes() {
     return (
@@ -13,18 +12,10 @@ function AppRoutes() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route
-                path="/tasks"
+                path="/tasks/*"
                 element={
                     <ProtectedRoute>
                         <TasksPage />
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/tasks/:id"
-                element={
-                    <ProtectedRoute>
-                        <TaskDetailPage />
                     </ProtectedRoute>
                 }
             />
