@@ -116,6 +116,19 @@ All six points were addressed and propagated across the project.
 - Kept the mascot's interactive state (focus, lengths, visibility) in a dedicated useLoginMascotState hook, following Single Responsibility: LoginPage stays focused on the form itself
 - Added a Service Worker (vite-plugin-pwa) with NetworkFirst caching for API GET requests, so the app can still show previously loaded tasks if the backend is unreachable
 
+**Improvements, account management, task assignment & full UI/SOLID refactor**
+- Dynamic Header (Login/Register vs Tasks/Account/Logout) plus a light/dark theme toggle persisted in localStorage
+- A second animated mascot in the Header, tracking the mouse cursor and blinking at random intervals
+- Account page: profile summary, password change, and blocked users (create/list/remove)
+- Administration section (ADMIN only): ban/unban users, view/remove any assignment block, with a self-ban safeguard
+- Full task assignment flow: assign, approve/reject, and assignee-controlled status vs creator-controlled title/description/priority
+- Tags: add/remove per task, with autocomplete suggestions from tags already used system-wide
+- Sort worker extended with status, tag, assignee and creator, alongside title/priority/created date
+- Redesigned Tasks and Task Detail: card grid with priority-coded borders, colour-coded chips, initials avatars
+- Centralised repeated styles into a global MUI theme, plus shared components (ConfirmIconButton, EmptyState, InitialsAvatar) and hooks (useUsersList, useTagsList) to remove duplication
+- Split Task Detail and Tasks into focused components (AssigneeField, TagsEditor, TaskFilters)
+- Code-split Tasks and Account pages with React.lazy/Suspense to shrink the initial bundle
+
 ---
 
 ## Getting Started

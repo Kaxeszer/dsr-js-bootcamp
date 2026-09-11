@@ -36,3 +36,23 @@ export async function register(
 
     return response.json()
 }
+
+export async function changePassword(
+    accessToken: string,
+    currentPassword: string,
+    newPassword: string
+): Promise<void> {
+    const response = await fetch(`${baseUrl}/auth/password`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+    })
+
+    if (!response.ok) {
+        const message = await extractErrorMessage(response, 'Could not change password')
+        throw new Error(message)
+    }
+}
