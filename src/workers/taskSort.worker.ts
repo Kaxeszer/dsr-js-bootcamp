@@ -1,6 +1,6 @@
 import type { Task } from '../types'
 
-export type SortField = 'title' | 'priority' | 'createdAt'
+export type SortField = 'title' | 'priority' | 'status' | 'tag' | 'assignee' | 'creator' | 'createdAt'
 export type SortDirection = 'asc' | 'desc'
 
 interface WorkerRequest {
@@ -14,6 +14,12 @@ const PRIORITY_ORDER: Record<Task['priority'], number> = {
     LOW: 0,
     MEDIUM: 1,
     HIGH: 2,
+}
+
+const STATUS_ORDER: Record<Task['status'], number> = {
+    TODO: 0,
+    IN_PROGRESS: 1,
+    DONE: 2,
 }
 
 function getDayTimestamp(isoDate: string): number {
@@ -34,9 +40,7 @@ function processTasks({ tasks, searchText, sortField, sortDirection }: WorkerReq
         const isAscending = sortDirection === 'asc'
 
         if (sortField === 'title') {
-            const titleA = a.title
-            const titleB = b.title
-            const comparison = titleA.localeCompare(titleB)
+            const comparison = a.title.localeCompare(b.title)
             return isAscending ? comparison : -comparison
         }
 
@@ -45,6 +49,34 @@ function processTasks({ tasks, searchText, sortField, sortDirection }: WorkerReq
             const priorityB = PRIORITY_ORDER[b.priority]
             const priorityComparison = isAscending ? priorityA - priorityB : priorityB - priorityA
             return priorityComparison !== 0 ? priorityComparison : a.title.localeCompare(b.title)
+        }
+
+        if (sortField === 'status') {
+            const statusA = STATUS_ORDER[a.status]
+            const statusB = STATUS_ORDER[b.status]
+            const statusComparison = isAscending ? statusA - statusB : statusB - statusA
+            return statusComparison !== 0 ? statusComparison : a.title.localeCompare(b.title)
+        }
+
+        if (sortField === 'tag') {
+            const tagA = a.tags[0]?.name ?? ''
+            const tagB = b.tags[0]?.name ?? ''
+            const tagComparison = isAscending ? tagA.localeCompare(tagB) : tagB.localeCompare(tagA)
+            return tagComparison !== 0 ? tagComparison : a.title.localeCompare(b.title)
+        }
+
+        if (sortField === 'assignee') {
+            const assigneeA = a.assignee?.nickname ?? ''
+            const assigneeB = b.assignee?.nickname ?? ''
+            const assigneeComparison = isAscending
+                ? assigneeA.localeCompare(assigneeB)
+                : assigneeB.localeCompare(assigneeA)
+            return assigneeComparison !== 0 ? assigneeComparison : a.title.localeCompare(b.title)
+        }
+
+        if (sortField === 'creator') {
+            const comparison = a.creator.nickname.localeCompare(b.creator.nickname)
+            return isAscending ? comparison : -comparison
         }
 
         const timeA = getDayTimestamp(a.createdAt)
