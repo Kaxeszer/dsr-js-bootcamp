@@ -6,7 +6,7 @@ import Header from './components/Header'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-import { CircularProgress, Box } from '@mui/material'
+import { CircularProgress, Box, Typography } from '@mui/material'
 
 const TasksPage = lazy(() => import('./pages/TasksPage'))
 const AccountPage = lazy(() => import('./pages/AccountPage'))
@@ -59,10 +59,19 @@ function AppRoutes() {
 function App() {
     return (
         <ThemeProvider>
-            <Header />
-            <main style={{ display: 'flex', justifyContent: 'center' }}>
-                <AppRoutes />
-            </main>
+            <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                <Header />
+
+                <main style={{ display: 'flex', justifyContent: 'center', flexGrow: 1 }}>
+                    <AppRoutes />
+                </main>
+
+                <Box component="footer" sx={{ textAlign: 'center', py: 2 }}>
+                    <Typography variant="caption" color="text.secondary">
+                        © 2026 Luís Pereira. Made for the DSR JS Bootcamp 2026. All rights reserved.
+                    </Typography>
+                </Box>
+            </Box>
         </ThemeProvider>
     )
 }
